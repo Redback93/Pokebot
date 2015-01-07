@@ -68,13 +68,7 @@ namespace Pokébot
             {
                 //Send !commands to channel
                 SendMessage("!pokeinfo !lookup !points !party !capture !release !trade !levelup");
-            }
-            //Check for !commandlist command
-            else if (message.ToLower() == "!commandlist")
-            {
-                string commandString = "Commands: !" + string.Join(" !", commands.Keys.ToArray());
-                SendMessage(commandString);
-            }
+            }  
             //Check for party command
             else if (message.ToLower() == "!party")
             {
