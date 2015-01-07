@@ -49,13 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="IRCBot.cs.backup" />
-    <Compile Include="BotForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="BotForm.Designer.cs">
-      <DependentUpon>BotForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,10 +99,5 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Newtonsoft.Json.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="BotForm.resx">
-      <DependentUpon>BotForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>
