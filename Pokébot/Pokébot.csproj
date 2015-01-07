@@ -52,34 +52,6 @@
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThresherIRC\ChannelModeInfo.cs" />
-    <Compile Include="ThresherIRC\CommandBuilder.cs" />
-    <Compile Include="ThresherIRC\Connection.cs" />
-    <Compile Include="ThresherIRC\ConnectionArgs.cs" />
-    <Compile Include="ThresherIRC\Delegates.cs" />
-    <Compile Include="ThresherIRC\Enums.cs" />
-    <Compile Include="ThresherIRC\Identd.cs" />
-    <Compile Include="ThresherIRC\IParser.cs" />
-    <Compile Include="ThresherIRC\Listener.cs" />
-    <Compile Include="ThresherIRC\NameGenerator.cs" />
-    <Compile Include="ThresherIRC\ReplyCode.cs" />
-    <Compile Include="ThresherIRC\Rfc2812Util.cs" />
-    <Compile Include="ThresherIRC\Sender.cs" />
-    <Compile Include="ThresherIRC\ServerProperties.cs" />
-    <Compile Include="ThresherIRC\TextColor.cs" />
-    <Compile Include="ThresherIRC\UserInfo.cs" />
-    <Compile Include="ThresherIRC\WhoisInfo.cs" />
-    <Compile Include="ThresherIRC\Ctcp\CtcpListener.cs" />
-    <Compile Include="ThresherIRC\Ctcp\CtcpResponder.cs" />
-    <Compile Include="ThresherIRC\Ctcp\CtcpSender.cs" />
-    <Compile Include="ThresherIRC\Ctcp\CtcpUtil.cs" />
-    <Compile Include="ThresherIRC\Dcc\DccChatSession.cs" />
-    <Compile Include="ThresherIRC\Dcc\DccFileInfo.cs" />
-    <Compile Include="ThresherIRC\Dcc\DccFileSession.cs" />
-    <Compile Include="ThresherIRC\Dcc\DccFileSessionManager.cs" />
-    <Compile Include="ThresherIRC\Dcc\DccListener.cs" />
-    <Compile Include="ThresherIRC\Dcc\DccUserInfo.cs" />
-    <Compile Include="ThresherIRC\Dcc\DccUtil.cs" />
     <Compile Include="IRCBot.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -96,5 +68,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Newtonsoft.Json.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ThresherIRC\ThresherIRC.csproj">
+      <Project>{facd9ae0-b58d-4f95-8bbf-46f9926c7059}</Project>
+      <Name>ThresherIRC</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
