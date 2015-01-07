@@ -17,11 +17,11 @@ namespace Pokébot
 
         public Player(string username)
         {
-            this.Username = username;
-            this.Points = 0;
-            this.Level = 0;
-            this.Pokemon = 0;
-            this.Tracking = true;
+            Username = username;
+            Points = 0;
+            Level = 0;
+            Pokemon = 0;
+            Tracking = true;
         }
     }
 }

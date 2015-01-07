@@ -26,9 +26,6 @@ namespace Pokébot
         //A list of trades initiated by a user
         private Dictionary<Player, Player> trades = new Dictionary<Player, Player>();
 
-        //A list of pre-defined text commands
-        private Dictionary<string, string> commands = new Dictionary<string, string>();
-
         //The timer which tracks points
         private Timer pointsTimer;
 
@@ -236,7 +233,7 @@ namespace Pokébot
                 SendMessage(targetPlayer.Username + " now has a " + pokemon[pokemonID]);
             }
             //Checks for add point command
-            else if (message.ToLower().StartsWith("!addpointsabc") && moderators.Contains(user.User.ToLower()))
+            else if (message.ToLower().StartsWith("!addpoints") && moderators.Contains(user.User.ToLower()))
             {
                 //Split the message up into three strings by the space
                 //0th string is !addpoints
@@ -281,7 +278,7 @@ namespace Pokébot
                 SaveSettings();
             }
             //Checks for remove point command
-            else if (message.ToLower().StartsWith("!removepointsabc") && moderators.Contains(user.User.ToLower()))
+            else if (message.ToLower().StartsWith("!removepoints") && moderators.Contains(user.User.ToLower()))
             {
                 //Split the message up into three strings by the space
                 //0th string is !removepoints
@@ -452,56 +449,6 @@ namespace Pokébot
 
                 SaveSettings();
             }
-
-            //Checks for the add command command
-            else if (message.ToLower().StartsWith("!command") && moderators.Contains(user.User.ToLower()))
-            {
-                //EG: !command add !hello Hi there how are you?
-                //Split it up into 4 parts
-                //0th part is the command string
-                //1st part is the add/remove
-                //2nd part is the command name
-                //3rd part is the command response
-                string[] messageSplit = message.Split(new[] { ' ' }, 4);
-
-                if (messageSplit.Length < 3)
-                {
-                    SendMessage("Must be in format: !command add/remove !name");
-                    return;
-                }
-
-                if (messageSplit[1].ToLower() == "add")
-                {
-                    if (messageSplit.Length < 4)
-                    {
-                        SendMessage("Must be in format: !command add -!name- -response-");
-                        return;
-                    }
-
-                    string commandName = (messageSplit[2].StartsWith("!") ? messageSplit[2].Substring(1) : messageSplit[2]).ToLower();
-                    string commandResponse = messageSplit[3];
-
-                    if (commands.ContainsKey(commandName))
-                        commands.Remove(commandName);
-                    commands.Add(commandName, commandResponse);
-                    SendMessage("Created command !" + commandName);
-                    SaveSettings();
-                }
-                else if (messageSplit[1].ToLower() == "remove" || messageSplit[1].ToLower() == "del")
-                {
-                    string commandName = (messageSplit[2].StartsWith("!") ? messageSplit[2].Substring(1) : messageSplit[2]).ToLower();
-
-                    if (commands.ContainsKey(commandName))
-                        commands.Remove(commandName);
-
-                    SendMessage("Deleted command !" + commandName);
-                    SaveSettings();
-                }
-            }
-
-            //Checks for text commands
-            if (message.StartsWith("!") && commands.ContainsKey(message.ToLower().Substring(1)))
-                SendMessage(commands[message.ToLower().Substring(1)]);
         }
 
         void RequestTimeout(Player sender, Player target, Timer timer)
@@ -689,17 +636,6 @@ namespace Pokébot
 
             foreach (dynamic pokemon in pokemonList.pokemon)
                 this.pokemon.Add((int)pokemon.id, (string)pokemon.name);
-
-            //Reads the commands file into a string
-            StreamReader commandReader = new StreamReader("commands.config");
-            string commandFile = commandReader.ReadToEnd();
-            commandReader.Close();
-
-            //Deserialse the commands into a variable
-            dynamic commandList = JsonConvert.DeserializeObject(commandFile);
-
-            foreach (dynamic command in commandList.commands)
-                this.commands.Add((string)command.name, (string)command.response);
         }
 
         //Saves the settings into the points configuration file
@@ -712,32 +648,6 @@ namespace Pokébot
             //Writes to the settings file
             JsonSerializer serialiser = new JsonSerializer();
             serialiser.Serialize(writer, players);
-
-            writer.Close();
-            streamWriter.Close();
-
-            //Creates the list of commands
-            dynamic commandList = new List<ExpandoObject>();
-
-            foreach (KeyValuePair<string, string> pair in commands)
-            {
-                dynamic commandObject = new ExpandoObject();
-                commandObject.name = pair.Key;
-                commandObject.response = pair.Value;
-                commandList.Add(commandObject);
-            }
-
-            //Adds the commands array to the settings
-            dynamic commandSettings = new ExpandoObject();
-            commandSettings.commands = commandList;
-
-            streamWriter = new StreamWriter("commands.config");
-            writer = new JsonTextWriter(streamWriter);
-            writer.Formatting = Formatting.Indented;
-
-            //Writes to the commands file
-            serialiser = new JsonSerializer();
-            serialiser.Serialize(writer, commandSettings);
 
             writer.Close();
             streamWriter.Close();
