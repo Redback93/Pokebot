@@ -61,11 +61,6 @@ namespace Pokébot
             }
             else if (message.ToLower() == "!battle")
             {
-                if (user.User.ToLower() == "scelust")
-                {
-                    SendMessage("You lost.");
-                    return;
-                }
                 Random rand = new Random();
                 if (rand.NextDouble() < 0.5)
                     SendMessage("You won.");
