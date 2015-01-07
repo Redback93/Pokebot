@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{F9D63DDD-183D-47E7-A038-688B947E82A9}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Pokébot</RootNamespace>
+    <AssemblyName>Pokébot</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Data.v12.2, Version=12.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v12.2.Core, Version=12.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v12.2, Version=12.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v12.2, Version=12.2.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IRCBot.cs.backup" />
+    <Compile Include="BotForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BotForm.Designer.cs">
+      <DependentUpon>BotForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Player.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThresherIRC\ChannelModeInfo.cs" />
+    <Compile Include="ThresherIRC\CommandBuilder.cs" />
+    <Compile Include="ThresherIRC\Connection.cs" />
+    <Compile Include="ThresherIRC\ConnectionArgs.cs" />
+    <Compile Include="ThresherIRC\Delegates.cs" />
+    <Compile Include="ThresherIRC\Enums.cs" />
+    <Compile Include="ThresherIRC\Identd.cs" />
+    <Compile Include="ThresherIRC\IParser.cs" />
+    <Compile Include="ThresherIRC\Listener.cs" />
+    <Compile Include="ThresherIRC\NameGenerator.cs" />
+    <Compile Include="ThresherIRC\ReplyCode.cs" />
+    <Compile Include="ThresherIRC\Rfc2812Util.cs" />
+    <Compile Include="ThresherIRC\Sender.cs" />
+    <Compile Include="ThresherIRC\ServerProperties.cs" />
+    <Compile Include="ThresherIRC\TextColor.cs" />
+    <Compile Include="ThresherIRC\UserInfo.cs" />
+    <Compile Include="ThresherIRC\WhoisInfo.cs" />
+    <Compile Include="ThresherIRC\Ctcp\CtcpListener.cs" />
+    <Compile Include="ThresherIRC\Ctcp\CtcpResponder.cs" />
+    <Compile Include="ThresherIRC\Ctcp\CtcpSender.cs" />
+    <Compile Include="ThresherIRC\Ctcp\CtcpUtil.cs" />
+    <Compile Include="ThresherIRC\Dcc\DccChatSession.cs" />
+    <Compile Include="ThresherIRC\Dcc\DccFileInfo.cs" />
+    <Compile Include="ThresherIRC\Dcc\DccFileSession.cs" />
+    <Compile Include="ThresherIRC\Dcc\DccFileSessionManager.cs" />
+    <Compile Include="ThresherIRC\Dcc\DccListener.cs" />
+    <Compile Include="ThresherIRC\Dcc\DccUserInfo.cs" />
+    <Compile Include="ThresherIRC\Dcc\DccUtil.cs" />
+    <Compile Include="IRCBot.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="commands.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="players.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="pokemon.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Newtonsoft.Json.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BotForm.resx">
+      <DependentUpon>BotForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

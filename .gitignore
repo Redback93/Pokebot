@@ -1,0 +1,5 @@
+_ReSharper.Pokébot/
+Pokébot/bin/
+Pokébot/obj/
+*.suo
+Pokébot.sln.DotSettings.user
