@@ -29,6 +29,10 @@ public class TwitchChat
 		_bot = new PircBotX(buildConfigure());
 	}
 	
+	/**
+	 * Constructs the Twitch chat with a list of channels to join upon connection
+	 * @param initialChannels The list of channel names to connect to
+	 */
 	public TwitchChat(String[] initialChannels)
 	{
 		_bot = new PircBotX(buildConfigure(initialChannels));
@@ -44,15 +48,18 @@ public class TwitchChat
 			@Override
 			public void run()
 			{
-				try {
+				try 
+				{	
 					_bot.startBot();
 				} 
 				catch (InterruptedIOException e)
 				{
 					Logging.GetLogger().info("IRC Bot Disconnected");
-				} catch (IOException e) {
+				} catch (IOException e) 
+				{
 					Logging.GetLogger().error(e.getMessage());
-				} catch (IrcException e) {
+				} catch (IrcException e) 
+				{
 					Logging.GetLogger().error(e.getMessage());
 				} 
 			}
