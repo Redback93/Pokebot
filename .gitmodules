@@ -1,0 +1,3 @@
+[submodule "TwitchPokedexIrc"]
+	path = TwitchPokedexIrc
+	url = https://github.com/Redback93/TwitchPokedexIrc.git
