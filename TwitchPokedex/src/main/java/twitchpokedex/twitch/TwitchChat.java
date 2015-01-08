@@ -10,9 +10,9 @@ import org.pircbotx.exception.IrcException;
 import twitchpokedex.constants.Constants;
 import twitchpokedex.database.DBConn;
 import twitchpokedex.logging.Logging;
-import twitchpokedex.twitch.handlers.GenericListener;
-import twitchpokedex.twitch.handlers.ModeratorListener;
-import twitchpokedex.twitch.handlers.TradeListener;
+import twitchpokedex.twitch.listeners.GenericListener;
+import twitchpokedex.twitch.listeners.ModeratorListener;
+import twitchpokedex.twitch.listeners.TradeListener;
 
 /**
  * Manages the connection to the Twitch IRC channels

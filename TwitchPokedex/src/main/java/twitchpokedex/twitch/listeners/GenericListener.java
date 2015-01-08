@@ -1,4 +1,4 @@
-package twitchpokedex.twitch.handlers;
+package twitchpokedex.twitch.listeners;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
