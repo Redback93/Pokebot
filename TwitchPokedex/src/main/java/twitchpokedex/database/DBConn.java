@@ -68,4 +68,44 @@ public class DBConn
 		   session.close();
 		}
 	}
+	
+	/**
+	 * Retrieves a pokemon by its given Id
+	 * @param id Given Id for the pokemon
+	 * @return The pokemon assosciated with that Id
+	 */
+	public static Pokemon GetPokemonById(Integer id)
+	{
+		Session session = factory.openSession();
+		try {
+			return (Pokemon) session.get(Pokemon.class, id);
+		}
+		catch (Exception e) {
+		   e.printStackTrace();
+		   return new Pokemon();
+		} finally {
+		   session.close();
+		}
+	}
+	
+	/**
+	 * Retrieves a pokemon by its given name
+	 * @param name Given name for the pokemon
+	 * @return The pokemon assosciated with that name
+	 */
+	public static Pokemon GetPokemonByName(String name)
+	{
+		Session session = factory.openSession();
+		try {
+			Query query = session.createQuery("from Pokemon P where P.name = :name");
+			query.setParameter("name", name);
+			return (Pokemon) query.list().get(0);
+		}
+		catch (Exception e) {
+		   e.printStackTrace();
+		   return new Pokemon();
+		} finally {
+		   session.close();
+		}
+	}
 }
