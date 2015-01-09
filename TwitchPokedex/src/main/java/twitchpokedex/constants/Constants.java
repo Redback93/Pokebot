@@ -11,4 +11,13 @@ public class Constants
 	 * Connection port information for the Twitch IRC channel
 	 */
 	public static final Integer IRC_PORT = 6667;
+	
+	/**
+	 * The maximum amount of pokemon that can be in the party
+	 */
+	public static final Integer MAX_PARTY_POKEMON = 6;
+	
+	/**
+	 * Donator icon
+	 */
 }

@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 08/01/2015 2:48:06 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="twitchpokedex.database.maps.Setting" table="settings" catalog="pokebot">
+    <class name="twitchpokedex.database.maps.Setting" table="settings" catalog="twitchpokedex">
         <id name="key" type="string">
             <column name="key" length="50" />
             <generator class="assigned" />

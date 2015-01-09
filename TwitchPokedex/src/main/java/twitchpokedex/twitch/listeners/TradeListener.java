@@ -7,7 +7,7 @@ import org.pircbotx.hooks.events.MessageEvent;
 public class TradeListener extends ListenerAdapter<PircBotX>
 {
 	@Override
-	public void onMessage(MessageEvent event) throws Exception
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
 		if(event.getMessage().equalsIgnoreCase("!trade"))
 			event.respond("Trade initiated");

@@ -8,8 +8,10 @@
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="show_sql">true</property>
+        
         <mapping resource="twitchpokedex/database/maps/Pokemon.hbm.xml"></mapping>
         <mapping resource="twitchpokedex/database/maps/User.hbm.xml"></mapping>
         <mapping resource="twitchpokedex/database/maps/Setting.hbm.xml"></mapping>
+        <mapping resource="twitchpokedex/database/maps/PartyPokemon.hbm.xml"></mapping>
     </session-factory>
 </hibernate-configuration>

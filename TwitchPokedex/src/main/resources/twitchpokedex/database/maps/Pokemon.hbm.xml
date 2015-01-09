@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-<!-- Generated 08/01/2015 2:48:06 PM by Hibernate Tools 3.4.0.CR1 -->
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10/01/2015 12:19:07 AM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="twitchpokedex.database.maps.Pokemon" table="pokemon" catalog="pokebot">
+    <class name="twitchpokedex.database.maps.Pokemon" table="pokemon" catalog="twitchpokedex">
         <id name="id" type="int">
             <column name="id" />
             <generator class="assigned" />
@@ -11,11 +11,8 @@
         <property name="name" type="string">
             <column name="name" length="50" not-null="true" />
         </property>
-        <set name="userses" table="users" inverse="true" lazy="true" fetch="select">
-            <key>
-                <column name="pokemon" not-null="true" />
-            </key>
-            <one-to-many class="twitchpokedex.database.maps.User" />
-        </set>
+        <property name="legendary" type="boolean">
+            <column name="legendary" not-null="true" />
+        </property>
     </class>
 </hibernate-mapping>

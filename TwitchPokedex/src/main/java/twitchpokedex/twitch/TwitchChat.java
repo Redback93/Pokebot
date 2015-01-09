@@ -10,8 +10,8 @@ import org.pircbotx.exception.IrcException;
 import twitchpokedex.constants.Constants;
 import twitchpokedex.database.DBConn;
 import twitchpokedex.logging.Logging;
+import twitchpokedex.twitch.listeners.ChannelListener;
 import twitchpokedex.twitch.listeners.GenericListener;
-import twitchpokedex.twitch.listeners.ModeratorListener;
 import twitchpokedex.twitch.listeners.TradeListener;
 
 /**
@@ -125,7 +125,7 @@ public class TwitchChat
 				.setServer(Constants.IRC_HOST, Constants.IRC_PORT)
 				.addListener(new GenericListener())
 				.addListener(new TradeListener())
-				.addListener(new ModeratorListener());
+				.addListener(new ChannelListener());
 		for(String channel : channels)
 			config.addAutoJoinChannel(formatChannel(channel));
 

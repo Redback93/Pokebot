@@ -3,14 +3,11 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Generated 08/01/2015 2:48:06 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-    <class name="twitchpokedex.database.maps.User" table="users" catalog="pokebot">
+    <class name="twitchpokedex.database.maps.User" table="users" catalog="twitchpokedex">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="pokemon" class="twitchpokedex.database.maps.Pokemon" fetch="select">
-            <column name="pokemon" not-null="true" />
-        </many-to-one>
         <property name="twitchId" type="int">
             <column name="twitch_id" not-null="true" />
         </property>
@@ -23,8 +20,8 @@
         <property name="points" type="int">
             <column name="points" not-null="true" />
         </property>
-        <property name="level" type="int">
-            <column name="level" not-null="true" />
+        <property name="donator" type="byte">
+            <column name="donator" not-null="true" />
         </property>
         <property name="updatedAt" type="timestamp">
             <column name="updated_at" length="19" not-null="true" />
