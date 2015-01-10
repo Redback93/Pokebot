@@ -23,5 +23,11 @@
         <property name="name" type="string">
             <column name="name" length="50" />
         </property>
+        <property name="mega" type="boolean">
+            <column name="mega" not-null="true" />
+        </property>
+        <property name="shiny" type="boolean">
+            <column name="shiny" not-null="true" />
+        </property>
     </class>
 </hibernate-mapping>

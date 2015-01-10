@@ -56,7 +56,7 @@ public class DollarUpdater
 			for(User user : updatingUsers)
 			{
 				System.out.println(user.getDisplayName() + ": " + (user.getPoints()+10));
-				user.addPoints(newPoints);
+				//user.addPoints(newPoints);
 				user.Save();
 			}
 		}

@@ -35,9 +35,9 @@ public class PokePicker
 		
 		Pokemon newPokemon = selectionPokemon.get(random.nextInt(selectionPokemon.size()));
 		
-		if(newPokemon.getLegendary())
-			//1 in 5 odds of throwing away your legendary for a new random pokemon
-			if(OneInNOdds(5))
+		if(newPokemon.isLegendary())
+			//1 in 3 odds of throwing away your legendary for a new random pokemon
+			if(OneInNOdds(3))
 				newPokemon = selectionPokemon.get(random.nextInt(selectionPokemon.size()));
 		
 		return newPokemon;
