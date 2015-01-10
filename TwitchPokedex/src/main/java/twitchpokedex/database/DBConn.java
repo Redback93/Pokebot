@@ -56,7 +56,7 @@ public class DBConn
 	 * Retrieves a setting from the database
 	 * 
 	 * @param key Given key for the database setting
-	 * @return Assosciated value for the database setting
+	 * @return Associated value for the database setting
 	 */
 	public static String GetSetting(String key)
 	{
@@ -76,7 +76,7 @@ public class DBConn
 	 * Retrieves a pokemon by its given Id
 	 * 
 	 * @param id Given Id for the pokemon
-	 * @return The pokemon assosciated with that Id or an empty pokemon
+	 * @return The pokemon associated with that Id or an empty pokemon
 	 */
 	public static Pokemon GetPokemonById(Integer id)
 	{
@@ -95,7 +95,7 @@ public class DBConn
 	 * Retrieves a pokemon by its given name
 	 * 
 	 * @param name Given name for the pokemon
-	 * @return The pokemon assosciated with that name or an empty pokemon
+	 * @return The pokemon associated with that name or an empty pokemon
 	 */
 	public static Pokemon GetPokemonByName(String name)
 	{
@@ -117,7 +117,7 @@ public class DBConn
 	 * Retrieves a user given their username
 	 * 
 	 * @param nick Given username for the user
-	 * @return The user assosciated with the username or an empty user
+	 * @return The user associated with the username or an empty user
 	 */
 	public static User GetUserByUsername(String nick)
 	{
@@ -157,7 +157,7 @@ public class DBConn
 
 	/**
 	 * Gets a list of all pokemon in a user's party
-	 * @param user The user assosciated with the party
+	 * @param user The user associated with the party
 	 * @return The list of pokemon in the user's party sorted in order of slot
 	 */
 	public static List<PartyPokemon> GetUserParty(User user)
