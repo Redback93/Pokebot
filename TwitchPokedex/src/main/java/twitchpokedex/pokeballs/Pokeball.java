@@ -9,7 +9,8 @@ import lombok.AccessLevel;
 public enum Pokeball
 {
 	UltraBall(1),
-	SafariBall(2);
+	SafariBall(2),
+	FireBall(3);
 	
 	private final int id;
 }
