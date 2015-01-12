@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 08/01/2015 2:48:06 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="twitchpokedex.database.maps.Cost" table="costs" catalog="twitchpokedex">
+        <id name="key" type="string">
+            <column name="key" length="50" />
+            <generator class="assigned" />
+        </id>
+        <property name="cost" type="int">
+            <column name="cost" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

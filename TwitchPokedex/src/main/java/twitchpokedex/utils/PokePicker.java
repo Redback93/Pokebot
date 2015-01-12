@@ -20,10 +20,10 @@ public class PokePicker
 		List<Pokemon> selectionPokemon;
 		switch(ball)
 		{
-			case UltraBall:
+			case Normalball:
 				selectionPokemon = DBConn.GetAllPokemon();
 				break;
-			case SafariBall:
+			case Netball:
 				selectionPokemon = GetAllBugType();
 				break;
 			default:

@@ -10,7 +10,7 @@ public enum Pokeball
 {
 	Normalball(1), //Normal
 	Dojoball(2), //Fighting
-	LavaBall(3), //Fire
+	Lavaball(3), //Fire
 	Wingball(4), //Flying
 	Leafball(5), //Grass
 	Toxicball(6), //Poison

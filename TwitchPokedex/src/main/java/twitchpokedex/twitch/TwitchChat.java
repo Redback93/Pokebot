@@ -2,9 +2,12 @@ package twitchpokedex.twitch;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
+import java.nio.charset.Charset;
+import java.util.Collections;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.User;
 import org.pircbotx.exception.IrcException;
 
 import twitchpokedex.constants.Constants;
@@ -26,7 +29,7 @@ public class TwitchChat
 
 	public TwitchChat()
 	{
-		_bot = new PircBotX(buildConfigure());
+		this(new String[0]);
 	}
 	
 	/**
@@ -36,6 +39,7 @@ public class TwitchChat
 	public TwitchChat(String[] initialChannels)
 	{
 		_bot = new PircBotX(buildConfigure(initialChannels));
+		User.setDonatorIcon(Constants.DONATOR_ICON);
 	}
 
 	/**
@@ -100,15 +104,6 @@ public class TwitchChat
 		// Must be in lowercase form
 		return channelName.toLowerCase();
 	}
-	
-	/**
-	 * Creates the configuration for the IRCBot
-	 * @return The created configuration
-	 */
-	private Configuration<PircBotX> buildConfigure()
-	{
-		return buildConfigure(new String[0]);
-	}
 
 	 /**
 	 * Creates the configuration for the IRCBot
@@ -123,6 +118,7 @@ public class TwitchChat
 				.setName(username).setLogin(username).setAutoNickChange(false)
 				.setServerPassword(password)
 				.setServer(Constants.IRC_HOST, Constants.IRC_PORT)
+				.setEncoding(Charset.forName("UTF-8"))
 				.addListener(new GenericListener())
 				.addListener(new TradeListener())
 				.addListener(new ChannelListener());

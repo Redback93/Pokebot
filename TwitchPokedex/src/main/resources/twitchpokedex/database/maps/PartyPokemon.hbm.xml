@@ -14,9 +14,7 @@
         <property name="slot" type="int">
             <column name="slot" not-null="true" />
         </property>
-        <property name="pokemon" type="int">
-            <column name="pokemon" not-null="true" />
-        </property>
+        <many-to-one name="pokemon" column="pokemon" class="twitchpokedex.database.maps.Pokemon" not-null="true" />
         <property name="level" type="int">
             <column name="level" not-null="true" />
         </property>

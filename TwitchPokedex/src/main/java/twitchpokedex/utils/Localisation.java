@@ -28,4 +28,9 @@ public class Localisation
 	{
 		return String.format(getString(keyName), args);
 	}
+	
+	public static String getFormat(String keyName)
+	{
+		return getString("format.Correct", getString(keyName));
+	}
 }

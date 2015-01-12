@@ -13,11 +13,12 @@ public class Constants
 	public static final Integer IRC_PORT = 6667;
 	
 	/**
+	 * Donator icon
+	 */
+	public static final String DONATOR_ICON = "&#10084";
+	
+	/**
 	 * The maximum amount of pokemon that can be in the party
 	 */
 	public static final Integer MAX_PARTY_POKEMON = 6;
-	
-	/**
-	 * Donator icon
-	 */
 }

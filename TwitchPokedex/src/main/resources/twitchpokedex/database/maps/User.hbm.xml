@@ -20,7 +20,7 @@
         <property name="points" type="int">
             <column name="points" not-null="true" />
         </property>
-        <property name="donator" type="byte">
+        <property name="donator" type="int">
             <column name="donator" not-null="true" />
         </property>
         <property name="updatedAt" type="timestamp">

@@ -2,16 +2,19 @@ package twitchpokedex.database.maps;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import twitchpokedex.database.DBConn;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class User implements java.io.Serializable
+public class User extends MapModel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -21,15 +24,41 @@ public class User implements java.io.Serializable
 	private String displayName;
 	private int points;
 	private int donator;
-	private Date updatedAt;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="timestamp", nullable = false,
+	    columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
+	private Date updatedAt = new Date();
 
-	public boolean isDefault()
+	public static User Create(int twitchId, String username, String displayName)
 	{
-		return this.id == 0;
+		User newUser = new User();
+		
+		newUser.twitchId = twitchId;
+		newUser.username = username;
+		newUser.displayName = displayName;
+		newUser.points = 0;
+		newUser.donator = 0;
+		
+		return newUser;
 	}
 	
-	public void Save()
+	public boolean isDefault()
 	{
-		DBConn.UpdateUser(this);
+		return this.id == null;
+	}
+
+	public void addPoints(int points)
+	{
+		this.points += points;
+	}
+
+	public void removePoints(int points)
+	{
+		this.points -= points;
+	}
+
+	public boolean hasDonated()
+	{
+		return getDonator()>0;
 	}
 }

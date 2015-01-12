@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class Pokemon implements java.io.Serializable
+public class Pokemon extends MapModel
 {
 	private static final long serialVersionUID = 1L;
 	

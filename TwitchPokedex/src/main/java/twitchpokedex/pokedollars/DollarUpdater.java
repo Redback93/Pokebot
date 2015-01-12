@@ -21,14 +21,9 @@ public class DollarUpdater
 	 * Adds an IRC user to the list of updating Twitch pokedex
 	 * @param channelUser The IRC user to add
 	 */
-	public static void AddUser(org.pircbotx.User channelUser)
-	{
-		User user = DBConn.GetUserByUsername(channelUser.getNick());
-		//Does not exist yet
-		if(user.isDefault()) return;
-		
-		System.out.println(channelUser.getNick());
-		if(!updatingUsers.contains(user)) updatingUsers.add(user);
+	public static void AddUser(User newUser)
+	{	
+		if(!updatingUsers.contains(newUser)) updatingUsers.add(newUser);
 	}
 	
 	/**
@@ -55,9 +50,8 @@ public class DollarUpdater
 			int newPoints = Integer.parseInt(DBConn.GetSetting("AccumulatedPoints"));
 			for(User user : updatingUsers)
 			{
-				System.out.println(user.getDisplayName() + ": " + (user.getPoints()+10));
-				//user.addPoints(newPoints);
-				user.Save();
+				user.addPoints(newPoints);
+				user.update();
 			}
 		}
 	}

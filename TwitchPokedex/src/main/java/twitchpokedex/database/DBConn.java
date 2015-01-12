@@ -10,6 +10,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import twitchpokedex.database.maps.Cost;
+import twitchpokedex.database.maps.MapModel;
 import twitchpokedex.database.maps.PartyPokemon;
 import twitchpokedex.database.maps.Pokemon;
 import twitchpokedex.database.maps.Setting;
@@ -20,7 +22,7 @@ public class DBConn
 {
 	private static SessionFactory factory;
 	private static ServiceRegistry serviceRegistry;
-
+	
 	/**
 	 * Builds and creates a connection to the database
 	 */
@@ -45,7 +47,7 @@ public class DBConn
 			Query query = session.createQuery("from Pokemon");
 			return (List<Pokemon>) query.list();
 		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
+			Logging.GetLogger().error(e.getMessage());
 			return (Collections.<Pokemon> emptyList());
 		} finally {
 			session.close();
@@ -65,7 +67,7 @@ public class DBConn
 			Setting setting = (Setting) session.get(Setting.class, key);
 			return setting.getValue();
 		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
+			Logging.GetLogger().error(e.getMessage());
 			return "";
 		} finally {
 			session.close();
@@ -78,13 +80,13 @@ public class DBConn
 	 * @param id Given Id for the pokemon
 	 * @return The pokemon associated with that Id or an empty pokemon
 	 */
-	public static Pokemon GetPokemonById(Integer id)
+	public static Pokemon GetPokemon(Integer id)
 	{
 		Session session = factory.openSession();
 		try {
 			return (Pokemon) session.get(Pokemon.class, id);
 		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
+			Logging.GetLogger().error(e.getMessage());
 			return new Pokemon();
 		} finally {
 			session.close();
@@ -97,7 +99,7 @@ public class DBConn
 	 * @param name Given name for the pokemon
 	 * @return The pokemon associated with that name or an empty pokemon
 	 */
-	public static Pokemon GetPokemonByName(String name)
+	public static Pokemon GetPokemon(String name)
 	{
 		Session session = factory.openSession();
 		try {
@@ -106,7 +108,7 @@ public class DBConn
 			query.setParameter("name", name);
 			return (Pokemon) query.list().get(0);
 		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
+			Logging.GetLogger().error(e.getMessage());
 			return new Pokemon();
 		} finally {
 			session.close();
@@ -116,40 +118,20 @@ public class DBConn
 	/**
 	 * Retrieves a user given their username
 	 * 
-	 * @param nick Given username for the user
+	 * @param user Given username for the user
 	 * @return The user associated with the username or an empty user
 	 */
-	public static User GetUserByUsername(String nick)
+	public static User GetUser(String user)
 	{
 		Session session = factory.openSession();
 		try {
 			Query query = session
 					.createQuery("from User U where U.username = :name");
-			query.setParameter("name", nick);
+			query.setParameter("name", user);
 			return (User) query.list().get(0);
 		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
+			Logging.GetLogger().error(e.getMessage());
 			return new User();
-		} finally {
-			session.close();
-		}
-	}
-
-	/**
-	 * Inserts or updates the given user
-	 * 
-	 * @param user The user to be updated or inserted
-	 */
-	public static void UpdateUser(User user)
-	{
-		Session session = factory.openSession();
-		try {
-			session.beginTransaction();
-			session.merge(user);
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
-			session.getTransaction().rollback();
 		} finally {
 			session.close();
 		}
@@ -172,7 +154,7 @@ public class DBConn
 			Collections.sort(party);
 			return party;
 		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
+			Logging.GetLogger().error(e.getMessage());
 			return Collections.<PartyPokemon> emptyList();
 		} finally {
 			session.close();
@@ -180,20 +162,59 @@ public class DBConn
 	}
 	
 	/**
-	 * Saves a new pokemon to the partypokemon table
-	 * @param newPP The pokemon to save
+	 * Updates the given object
+	 * 
+	 * @param model The model to update in the DB
 	 */
-	public static void NewPartyPokemon(PartyPokemon newPP)
+	public static void UpdateObject(MapModel model)
 	{
 		Session session = factory.openSession();
 		try {
 			session.beginTransaction();
-			session.save(newPP);
+			session.merge(model);
 			session.getTransaction().commit();
 		} catch (Exception e) {
-			Logging.GetLogger().error(Logging.DATABASE_ERROR, e.getMessage());
+			Logging.GetLogger().error(e.getMessage());
+			session.getTransaction().rollback();
+		} finally {
+			session.close();
+		}
+	}
+	
+	/**
+	 * Saves a new object or updates an existing object in the database
+	 * @param object The object to save or update
+	 */
+	public static void SaveOrUpdateObject(Object object)
+	{
+		Session session = factory.openSession();
+		try {
+			session.beginTransaction();
+			session.saveOrUpdate(object);
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			Logging.GetLogger().error(e.getMessage());
 			e.printStackTrace();
 			session.getTransaction().rollback();
+		} finally {
+			session.close();
+		}
+	}
+	
+	
+	/**
+	 * Gets a cost from the database
+	 * @param key The key of the cost
+	 * @return The cost associated with that key
+	 */
+	public static int GetCost(String key)
+	{
+		Session session = factory.openSession();
+		try {
+			return ((Cost) session.get(Cost.class, key)).getCost();
+		} catch (Exception e) {
+			Logging.GetLogger().error(e.getMessage());
+			return 0;
 		} finally {
 			session.close();
 		}
