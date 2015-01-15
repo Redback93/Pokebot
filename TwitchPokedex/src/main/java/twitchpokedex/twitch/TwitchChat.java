@@ -19,6 +19,7 @@ import twitchpokedex.twitch.listeners.TradeListener;
 
 /**
  * Manages the connection to the Twitch IRC channels
+ * 
  * @author Redback
  *
  */
@@ -31,9 +32,11 @@ public class TwitchChat
 	{
 		this(new String[0]);
 	}
-	
+
 	/**
-	 * Constructs the Twitch chat with a list of channels to join upon connection
+	 * Constructs the Twitch chat with a list of channels to join upon
+	 * connection
+	 * 
 	 * @param initialChannels The list of channel names to connect to
 	 */
 	public TwitchChat(String[] initialChannels)
@@ -43,7 +46,7 @@ public class TwitchChat
 	}
 
 	/**
-	 * Begin connection to the IRC server 
+	 * Begin connection to the IRC server
 	 */
 	public void Start()
 	{
@@ -52,20 +55,15 @@ public class TwitchChat
 			@Override
 			public void run()
 			{
-				try 
-				{	
+				try {
 					_bot.startBot();
-				} 
-				catch (InterruptedIOException e)
-				{
+				} catch (InterruptedIOException e) {
 					Logging.GetLogger().info("IRC Bot Disconnected");
-				} catch (IOException e) 
-				{
+				} catch (IOException e) {
 					Logging.GetLogger().error(e.getMessage());
-				} catch (IrcException e) 
-				{
+				} catch (IrcException e) {
 					Logging.GetLogger().error(e.getMessage());
-				} 
+				}
 			}
 		});
 		runningThread.start();
@@ -82,6 +80,7 @@ public class TwitchChat
 
 	/**
 	 * Connects the bot to a given channel
+	 * 
 	 * @param channelName An unformatted channel name
 	 */
 	public void JoinChannel(String channelName)
@@ -92,6 +91,7 @@ public class TwitchChat
 
 	/**
 	 * Formats a username or channel name to match IRC standards
+	 * 
 	 * @param channelName The unformatted channel name
 	 * @return An IRC standard channel name
 	 */
@@ -105,8 +105,9 @@ public class TwitchChat
 		return channelName.toLowerCase();
 	}
 
-	 /**
+	/**
 	 * Creates the configuration for the IRCBot
+	 * 
 	 * @param channels A list of channels to join after connecting
 	 * @return The created configuration
 	 */
@@ -122,7 +123,7 @@ public class TwitchChat
 				.addListener(new GenericListener())
 				.addListener(new TradeListener())
 				.addListener(new ChannelListener());
-		for(String channel : channels)
+		for (String channel : channels)
 			config.addAutoJoinChannel(formatChannel(channel));
 
 		return config.buildConfiguration();

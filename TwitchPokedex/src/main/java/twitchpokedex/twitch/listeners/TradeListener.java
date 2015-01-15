@@ -9,7 +9,7 @@ public class TradeListener extends ListenerAdapter<PircBotX>
 	@Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception
 	{
-		if(event.getMessage().equalsIgnoreCase("!trade"))
+		if (event.getMessage().equalsIgnoreCase("!trade"))
 			event.respond("Trade initiated");
-    }
+	}
 }

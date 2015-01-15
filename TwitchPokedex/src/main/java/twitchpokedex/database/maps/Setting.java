@@ -3,8 +3,9 @@ package twitchpokedex.database.maps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;;
+import lombok.AccessLevel;
 
+;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +13,7 @@ import lombok.AccessLevel;;
 public class Setting extends MapModel
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String key;
 	private String value;
 }

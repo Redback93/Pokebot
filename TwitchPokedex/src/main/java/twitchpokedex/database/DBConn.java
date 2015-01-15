@@ -15,6 +15,7 @@ import twitchpokedex.database.maps.MapModel;
 import twitchpokedex.database.maps.PartyPokemon;
 import twitchpokedex.database.maps.Pokemon;
 import twitchpokedex.database.maps.Setting;
+import twitchpokedex.database.maps.Type;
 import twitchpokedex.database.maps.User;
 import twitchpokedex.logging.Logging;
 
@@ -22,7 +23,7 @@ public class DBConn
 {
 	private static SessionFactory factory;
 	private static ServiceRegistry serviceRegistry;
-	
+
 	/**
 	 * Builds and creates a connection to the database
 	 */
@@ -45,6 +46,28 @@ public class DBConn
 		Session session = factory.openSession();
 		try {
 			Query query = session.createQuery("from Pokemon");
+			return (List<Pokemon>) query.list();
+		} catch (Exception e) {
+			Logging.GetLogger().error(e.getMessage());
+			return (Collections.<Pokemon> emptyList());
+		} finally {
+			session.close();
+		}
+	}
+
+	/**
+	 * Builds a list of all pokemon of a specific type in the database
+	 * 
+	 * @param pokemonType The type of pokemon to retrieve
+	 * @return The list of all pokemon by that type in the database
+	 */
+	public static List<Pokemon> GetAllPokemon(Type pokemonType)
+	{
+		Session session = factory.openSession();
+		try {
+			Query query = session
+					.createQuery("from Pokemon P where P.type1 = :type or P.type2 = :type");
+			query.setParameter("type", pokemonType);
 			return (List<Pokemon>) query.list();
 		} catch (Exception e) {
 			Logging.GetLogger().error(e.getMessage());
@@ -139,6 +162,7 @@ public class DBConn
 
 	/**
 	 * Gets a list of all pokemon in a user's party
+	 * 
 	 * @param user The user associated with the party
 	 * @return The list of pokemon in the user's party sorted in order of slot
 	 */
@@ -147,10 +171,10 @@ public class DBConn
 		Session session = factory.openSession();
 		try {
 			Query query = session
-					.createQuery("from PartyPokemon P where P.user = :userid");
-			query.setParameter("userid", user.getId());
+					.createQuery("from PartyPokemon P where P.user = :user");
+			query.setParameter("user", user);
 			List<PartyPokemon> party = (List<PartyPokemon>) query.list();
-			//Sort in order of slot - put in order 1-6
+			// Sort in order of slot - put in order 1-6
 			Collections.sort(party);
 			return party;
 		} catch (Exception e) {
@@ -160,7 +184,7 @@ public class DBConn
 			session.close();
 		}
 	}
-	
+
 	/**
 	 * Updates the given object
 	 * 
@@ -180,9 +204,10 @@ public class DBConn
 			session.close();
 		}
 	}
-	
+
 	/**
 	 * Saves a new object or updates an existing object in the database
+	 * 
 	 * @param object The object to save or update
 	 */
 	public static void SaveOrUpdateObject(Object object)
@@ -200,10 +225,10 @@ public class DBConn
 			session.close();
 		}
 	}
-	
-	
+
 	/**
 	 * Gets a cost from the database
+	 * 
 	 * @param key The key of the cost
 	 * @return The cost associated with that key
 	 */
@@ -215,6 +240,22 @@ public class DBConn
 		} catch (Exception e) {
 			Logging.GetLogger().error(e.getMessage());
 			return 0;
+		} finally {
+			session.close();
+		}
+	}
+
+	public static Type GetType(String typeName)
+	{
+		Session session = factory.openSession();
+		try {
+			Query query = session
+					.createQuery("from Type T where T.name = :typeName");
+			query.setParameter("typeName", typeName);
+			return (Type) query.list().get(0);
+		} catch (Exception e) {
+			Logging.GetLogger().error(e.getMessage());
+			return null;
 		} finally {
 			session.close();
 		}

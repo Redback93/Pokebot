@@ -12,7 +12,9 @@ import twitchpokedex.database.DBConn;
 import twitchpokedex.database.maps.PartyPokemon;
 import twitchpokedex.database.maps.Pokemon;
 import twitchpokedex.database.maps.User;
-import twitchpokedex.pokeballs.Pokeball;
+import twitchpokedex.items.Item;
+import twitchpokedex.items.ItemManager;
+import twitchpokedex.items.Pokeball;
 import twitchpokedex.pokedollars.DollarUpdater;
 import twitchpokedex.twitch.TwitchAPI;
 import twitchpokedex.twitch.api.TwitchUser;
@@ -22,125 +24,148 @@ import twitchpokedex.utils.PokePicker;
 @RequiredArgsConstructor
 public class CommandInterpreter
 {
-	@NonNull private org.pircbotx.User chatUser;
-	@NonNull private User tpUser;
-	@NonNull private MessageEvent<PircBotX> ircEvent;
-	
+	@NonNull
+	private org.pircbotx.User chatUser;
+	@NonNull
+	private User tpUser;
+	@NonNull
+	private MessageEvent<PircBotX> ircEvent;
+
 	public void interpret(String commandTerm, List<String> args)
 	{
-		//Allow for non-users
-		if(commandTerm.equalsIgnoreCase("capture"))
-			capturePokemon();
-		else if(tpUser.isDefault())
-		{
+		// Allow for non-users
+		if (commandTerm.equalsIgnoreCase("capture"))
+			capturePokemon(args);
+		else if (tpUser.isDefault()) {
 			ircEvent.respond(Localisation.getString("errors.NotJoined"));
 			return;
 		}
-		
+
 		DollarUpdater.AddUser(tpUser);
-		
-		if(commandTerm.equalsIgnoreCase("levelup"))
+
+		if (commandTerm.equalsIgnoreCase("levelup"))
 			levelupPokemon(args);
-		else if(commandTerm.equalsIgnoreCase("points"))
+		else if (commandTerm.equalsIgnoreCase("points"))
 			getPoints();
+		else if (commandTerm.equalsIgnoreCase("use"))
+			useItem(args);
 	}
-	
+
 	/**
-	 * Runs the capture pokemon algorithm and adds the new pokemon to the party 
+	 * Runs the capture pokemon algorithm and adds the new pokemon to the party
+	 * 
+	 * @param args
 	 */
-	private void capturePokemon()
+	private void capturePokemon(List<String> args)
 	{
 		List<PartyPokemon> party = DBConn.GetUserParty(tpUser);
-		//Create the new user on the first capture event
-		if(tpUser.isDefault()) createNewUser();
-		
-		//Check for party full
-		if(party.size() >= Constants.MAX_PARTY_POKEMON)
-		{
+		// Create the new user on the first capture event
+		if (tpUser.isDefault())
+			createNewUser();
+
+		// Check for party full
+		if (party.size() >= Constants.MAX_PARTY_POKEMON) {
 			ircEvent.respond(Localisation.getString("errors.PartyFull"));
 			return;
 		}
-		
+
+		// Determine pokéball to use
+		Pokeball pokeball;
+
+		// Default to normal ball
+		if (args.size() < 1)
+			pokeball = Pokeball.normalball;
+		else {
+			// Do a safe cast to an item first
+			Item specifiedItem = ItemManager.getItem(args.get(0));
+			// Do a safe cast to pokeball, if possible
+			pokeball = (specifiedItem instanceof Pokeball) ? (Pokeball) specifiedItem
+					: null;
+			if (pokeball == null) {
+				ircEvent.respond(Localisation.getString(
+						"errors.UnrecognisedItem", args.get(0)));
+				return;
+			}
+		}
+
+		// TODO: Take pokeball out of inventory
+
 		boolean isUnique = true;
 		Pokemon newPokemon;
-		do
-		{
-			newPokemon = PokePicker.GetRandomPokemon(Pokeball.Normalball);
-			
-			//Check pokemon doesn't exist
-			for(PartyPokemon mon : party)
-				if(mon.getPokemon().getId() == newPokemon.getId())
-					isUnique=false;
-		}
-		while(!isUnique);
-		
+		do {
+			newPokemon = PokePicker.GetRandomPokemon(pokeball);
+
+			// Check pokemon doesn't exist
+			for (PartyPokemon mon : party)
+				if (mon.getPokemon().getId() == newPokemon.getId())
+					isUnique = false;
+		} while (!isUnique);
+
 		int slot = 0;
-		//Check for empty party slot
-		if(party.size() != 0)
-			//Last filled party slot
-			slot = party.get(party.size()-1).getSlot() + 1;
-		
-		PartyPokemon newPP = new PartyPokemon(); //NewPartyPokemon
-		newPP.setLevel(1); //Default to level 1
-		newPP.setName(null); //Default to no name
-		newPP.setPokemon(newPokemon); //Set to the algorithm pokemon
+		// Check for empty party slot
+		if (party.size() != 0)
+			// Last filled party slot
+			slot = party.get(party.size() - 1).getSlot() + 1;
+
+		PartyPokemon newPP = new PartyPokemon(); // NewPartyPokemon
+		newPP.setLevel(1); // Default to level 1
+		newPP.setName(null); // Default to no name
+		newPP.setPokemon(newPokemon); // Set to the algorithm pokemon
 		newPP.setSlot(slot);
-		newPP.setUser(tpUser.getId()); //Set to tpUser
+		newPP.setUser(tpUser.getId()); // Set to tpUser
 		DBConn.SaveOrUpdateObject(newPP);
-		
-		ircEvent.respond(Localisation.getString("actions.PokemonCaptured", newPokemon.getName()));
+
+		ircEvent.respond(Localisation.getString("actions.PokemonCaptured",
+				newPokemon.getName()));
 	}
-	
+
 	/**
 	 * Levels up the pokemon specified by the user
 	 */
 	private void levelupPokemon(List<String> args)
 	{
-		//Check for appropriate arguments
-		if(args.isEmpty())
-		{
+		// Check for appropriate arguments
+		if (args.isEmpty()) {
 			ircEvent.respond(Localisation.getFormat("format.Levelup"));
 			return;
 		}
-		
+
 		String pokemonName = args.get(0);
 		List<PartyPokemon> party = DBConn.GetUserParty(tpUser);
 		PartyPokemon selectedPokemon = null;
-		
-		//Scroll through all party pokemon to find theirs
-		for(PartyPokemon poke : party)
-		{
+
+		// Scroll through all party pokemon to find theirs
+		for (PartyPokemon poke : party) {
 			String partyPokeName = poke.getPokemon().getName();
-			
-			if(partyPokeName.equalsIgnoreCase(pokemonName))
-			{
+
+			if (partyPokeName.equalsIgnoreCase(pokemonName)) {
 				selectedPokemon = poke;
 				break;
 			}
 		}
-		
-		//Respond to user if not found
-		if(selectedPokemon == null)
-		{
+
+		// Respond to user if not found
+		if (selectedPokemon == null) {
 			ircEvent.respond(Localisation.getString("errors.PokemonNotFound"));
 			return;
 		}
-		
+
 		int levelupCost = DBConn.GetCost("Levelup");
-		//Ensure enough pokedollars to pay for operation
-		if(tpUser.getPoints() < levelupCost)
-		{
-			ircEvent.respond(Localisation.getString("errors.NotEnoughDollars", levelupCost));
+		// Ensure enough pokedollars to pay for operation
+		if (tpUser.getPoints() < levelupCost) {
+			ircEvent.respond(Localisation.getString("errors.NotEnoughDollars",
+					levelupCost));
 			return;
 		}
-		
-		//Pays for the service
+
+		// Pays for the service
 		tpUser.removePoints(levelupCost);
 		selectedPokemon.levelUp();
 		tpUser.update();
 		selectedPokemon.update();
-		
-		ircEvent.respond(Localisation.getString("actions.PokemonLevelled", selectedPokemon.getDisplayName(), selectedPokemon.getLevel()));
+
+		ircEvent.respond(Localisation.getString("actions.PokemonLevelled",
+				selectedPokemon.getDisplayName(), selectedPokemon.getLevel()));
 	}
 
 	/**
@@ -148,18 +173,28 @@ public class CommandInterpreter
 	 */
 	private void getPoints()
 	{
-		ircEvent.respond(Localisation.getString("info.CurrentPoints", tpUser.getPoints()));
+		ircEvent.respond(Localisation.getString("info.CurrentPoints",
+				tpUser.getPoints()));
 	}
-	
+
+	/**
+	 * Uses an item in the player's inventory
+	 */
+	private void useItem(List<String> args)
+	{
+
+	}
+
 	/**
 	 * Creates a new user
 	 */
 	private void createNewUser()
 	{
 		TwitchUser twitchUser = TwitchAPI.GetTwitchUser(chatUser.getNick());
-		User newUser = User.Create(twitchUser.getId(), twitchUser.getName(), twitchUser.getDisplayName());
+		User newUser = User.Create(twitchUser.getId(), twitchUser.getName(),
+				twitchUser.getDisplayName());
 		newUser.save();
-		
+
 		tpUser = DBConn.GetUser(twitchUser.getName());
 	}
 }

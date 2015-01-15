@@ -14,5 +14,11 @@
         <property name="legendary" type="boolean">
             <column name="legendary" not-null="true" />
         </property>
+        <many-to-one name="type1" class="twitchpokedex.database.maps.Type" fetch="select">
+            <column name="type1" not-null="true" />
+        </many-to-one>
+        <many-to-one name="type2" class="twitchpokedex.database.maps.Type" fetch="select">
+            <column name="type2" />
+        </many-to-one>
     </class>
 </hibernate-mapping>

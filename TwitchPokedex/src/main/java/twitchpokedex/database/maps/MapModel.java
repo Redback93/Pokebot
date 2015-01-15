@@ -10,7 +10,7 @@ public class MapModel implements java.io.Serializable
 	{
 		DBConn.UpdateObject(this);
 	}
-	
+
 	public void save()
 	{
 		DBConn.SaveOrUpdateObject(this);

@@ -10,5 +10,5 @@ import org.pircbotx.hooks.events.UserModeEvent;
 
 public class GenericListener extends ListenerAdapter<PircBotX>
 {
-	
+
 }

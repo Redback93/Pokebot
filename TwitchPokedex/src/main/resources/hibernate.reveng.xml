@@ -2,5 +2,15 @@
 <!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd" >
 
 <hibernate-reverse-engineering>
+	<table-filter match-name="costs" match-catalog="twitchpokedex"></table-filter>
+	<table-filter match-name="inventory_items"
+		match-catalog="twitchpokedex">
+	</table-filter>
+	<table-filter match-name="party_pokemon"
+		match-catalog="twitchpokedex">
+	</table-filter>
 	<table-filter match-name="pokemon" match-catalog="twitchpokedex"></table-filter>
+	<table-filter match-name="settings" match-catalog="twitchpokedex"></table-filter>
+	<table-filter match-name="types" match-catalog="twitchpokedex"></table-filter>
+	<table-filter match-name="users" match-catalog="twitchpokedex"></table-filter>
 </hibernate-reverse-engineering>

@@ -1,11 +1,11 @@
 package twitchpokedex.database.maps;
 
-import org.apache.commons.lang3.StringUtils;
-
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import org.apache.commons.lang3.StringUtils;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class PartyPokemon extends MapModel implements Comparable<PartyPokemon>
 {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 	private int user;
 	private int slot;
@@ -33,11 +33,12 @@ public class PartyPokemon extends MapModel implements Comparable<PartyPokemon>
 	{
 		this.level++;
 	}
-	
+
 	public String getDisplayName()
 	{
-		if(name == null || StringUtils.isEmpty(name))
+		if (name == null || StringUtils.isEmpty(name))
 			return pokemon.getName();
-		else return String.format("%s (%s)", pokemon.getName(), this.name);
+		else
+			return String.format("%s (%s)", pokemon.getName(), this.name);
 	}
 }

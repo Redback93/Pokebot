@@ -15,5 +15,7 @@
         <mapping resource="twitchpokedex/database/maps/Setting.hbm.xml"></mapping>
         <mapping resource="twitchpokedex/database/maps/PartyPokemon.hbm.xml"></mapping>
         <mapping resource="twitchpokedex/database/maps/Cost.hbm.xml"></mapping>
+        <mapping resource="twitchpokedex/database/maps/InventoryItem.hbm.xml"></mapping>
+        <mapping resource="twitchpokedex/database/maps/Type.hbm.xml"></mapping>
     </session-factory>
 </hibernate-configuration>

@@ -8,9 +8,7 @@
             <column name="id" />
             <generator class="increment" />
         </id>
-        <property name="user" type="int">
-            <column name="user" not-null="true" />
-        </property>
+        <many-to-one name="user" column="user" class="twitchpokedex.database.maps.User" not-null="true" />
         <property name="slot" type="int">
             <column name="slot" not-null="true" />
         </property>
