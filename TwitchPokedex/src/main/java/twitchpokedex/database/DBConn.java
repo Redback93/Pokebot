@@ -12,7 +12,6 @@ import org.hibernate.service.ServiceRegistry;
 
 import twitchpokedex.database.maps.Cost;
 import twitchpokedex.database.maps.MapModel;
-import twitchpokedex.database.maps.PartyPokemon;
 import twitchpokedex.database.maps.Pokemon;
 import twitchpokedex.database.maps.Setting;
 import twitchpokedex.database.maps.Type;
@@ -155,31 +154,6 @@ public class DBConn
 		} catch (Exception e) {
 			Logging.GetLogger().error(e.getMessage());
 			return new User();
-		} finally {
-			session.close();
-		}
-	}
-
-	/**
-	 * Gets a list of all pokemon in a user's party
-	 * 
-	 * @param user The user associated with the party
-	 * @return The list of pokemon in the user's party sorted in order of slot
-	 */
-	public static List<PartyPokemon> GetUserParty(User user)
-	{
-		Session session = factory.openSession();
-		try {
-			Query query = session
-					.createQuery("from PartyPokemon P where P.user = :user");
-			query.setParameter("user", user);
-			List<PartyPokemon> party = (List<PartyPokemon>) query.list();
-			// Sort in order of slot - put in order 1-6
-			Collections.sort(party);
-			return party;
-		} catch (Exception e) {
-			Logging.GetLogger().error(e.getMessage());
-			return Collections.<PartyPokemon> emptyList();
 		} finally {
 			session.close();
 		}

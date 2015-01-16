@@ -2,6 +2,7 @@ package twitchpokedex;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -15,6 +16,7 @@ import twitchpokedex.database.maps.User;
 import twitchpokedex.items.Item;
 import twitchpokedex.items.ItemManager;
 import twitchpokedex.items.Pokeball;
+import twitchpokedex.items.Usable;
 import twitchpokedex.pokedollars.DollarUpdater;
 import twitchpokedex.twitch.TwitchAPI;
 import twitchpokedex.twitch.api.TwitchUser;
@@ -37,7 +39,7 @@ public class CommandInterpreter
 		if (commandTerm.equalsIgnoreCase("capture"))
 			capturePokemon(args);
 		else if (tpUser.isDefault()) {
-			ircEvent.respond(Localisation.getString("errors.NotJoined"));
+			respond(Localisation.getString("errors.NotJoined"));
 			return;
 		}
 
@@ -49,6 +51,10 @@ public class CommandInterpreter
 			getPoints();
 		else if (commandTerm.equalsIgnoreCase("use"))
 			useItem(args);
+		else if(commandTerm.equalsIgnoreCase("party"))
+			getParty();
+		else if(commandTerm.equalsIgnoreCase("bag"))
+			getBag();
 	}
 
 	/**
@@ -56,18 +62,16 @@ public class CommandInterpreter
 	 * 
 	 * @param args
 	 */
-	private void capturePokemon(List<String> args)
+	private boolean capturePokemon(List<String> args)
 	{
-		List<PartyPokemon> party = DBConn.GetUserParty(tpUser);
+		List<PartyPokemon> party = tpUser.getParty();
 		// Create the new user on the first capture event
 		if (tpUser.isDefault())
 			createNewUser();
 
 		// Check for party full
-		if (party.size() >= Constants.MAX_PARTY_POKEMON) {
-			ircEvent.respond(Localisation.getString("errors.PartyFull"));
-			return;
-		}
+		if (party.size() >= Constants.MAX_PARTY_POKEMON)
+			return respond(Localisation.getString("errors.PartyFull"));
 
 		// Determine pokéball to use
 		Pokeball pokeball;
@@ -81,11 +85,9 @@ public class CommandInterpreter
 			// Do a safe cast to pokeball, if possible
 			pokeball = (specifiedItem instanceof Pokeball) ? (Pokeball) specifiedItem
 					: null;
-			if (pokeball == null) {
-				ircEvent.respond(Localisation.getString(
+			if (pokeball == null)
+				return respond(Localisation.getString(
 						"errors.UnrecognisedItem", args.get(0)));
-				return;
-			}
 		}
 
 		// TODO: Take pokeball out of inventory
@@ -112,51 +114,35 @@ public class CommandInterpreter
 		newPP.setName(null); // Default to no name
 		newPP.setPokemon(newPokemon); // Set to the algorithm pokemon
 		newPP.setSlot(slot);
-		newPP.setUser(tpUser.getId()); // Set to tpUser
+		newPP.setUser(tpUser);
+		party.add(newPP);
 		DBConn.SaveOrUpdateObject(newPP);
 
-		ircEvent.respond(Localisation.getString("actions.PokemonCaptured",
-				newPokemon.getName()));
+		return respond(Localisation.getString("actions.PokemonCaptured",
+				newPP));
 	}
 
 	/**
 	 * Levels up the pokemon specified by the user
 	 */
-	private void levelupPokemon(List<String> args)
+	private boolean levelupPokemon(List<String> args)
 	{
 		// Check for appropriate arguments
-		if (args.isEmpty()) {
-			ircEvent.respond(Localisation.getFormat("format.Levelup"));
-			return;
-		}
+		if (args.isEmpty())
+			return respond(Localisation.getFormat("format.Levelup"));
 
 		String pokemonName = args.get(0);
-		List<PartyPokemon> party = DBConn.GetUserParty(tpUser);
-		PartyPokemon selectedPokemon = null;
-
-		// Scroll through all party pokemon to find theirs
-		for (PartyPokemon poke : party) {
-			String partyPokeName = poke.getPokemon().getName();
-
-			if (partyPokeName.equalsIgnoreCase(pokemonName)) {
-				selectedPokemon = poke;
-				break;
-			}
-		}
+		PartyPokemon selectedPokemon = getPartyPokemon(pokemonName);
 
 		// Respond to user if not found
-		if (selectedPokemon == null) {
-			ircEvent.respond(Localisation.getString("errors.PokemonNotFound"));
-			return;
-		}
+		if (selectedPokemon == null)
+			return respond(Localisation.getString("errors.PokemonNotFound"));
 
 		int levelupCost = DBConn.GetCost("Levelup");
 		// Ensure enough pokedollars to pay for operation
-		if (tpUser.getPoints() < levelupCost) {
-			ircEvent.respond(Localisation.getString("errors.NotEnoughDollars",
+		if (tpUser.getPoints() < levelupCost)
+			return respond(Localisation.getString("errors.NotEnoughDollars",
 					levelupCost));
-			return;
-		}
 
 		// Pays for the service
 		tpUser.removePoints(levelupCost);
@@ -164,37 +150,134 @@ public class CommandInterpreter
 		tpUser.update();
 		selectedPokemon.update();
 
-		ircEvent.respond(Localisation.getString("actions.PokemonLevelled",
-				selectedPokemon.getDisplayName(), selectedPokemon.getLevel()));
+		return respond(Localisation.getString("actions.PokemonLevelled",
+				selectedPokemon, selectedPokemon.getLevel()));
 	}
 
 	/**
-	 * Outputs the users points
+	 * Outputs the user's points
 	 */
-	private void getPoints()
+	private boolean getPoints()
 	{
-		ircEvent.respond(Localisation.getString("info.CurrentPoints",
+		return respond(Localisation.getString("info.CurrentPoints",
 				tpUser.getPoints()));
+	}
+	
+	/**
+	 * Outputs the user's party
+	 */
+	private boolean getParty()
+	{
+		String responseString = StringUtils.join(tpUser.getParty(), ", ");
+		return respond(Localisation.getString("info.CurrentParty", responseString));
 	}
 
 	/**
 	 * Uses an item in the player's inventory
+	 * @param args The arguments for the command
 	 */
-	private void useItem(List<String> args)
+	private boolean useItem(List<String> args)
 	{
-
+		if(args.size() < 1) respond(Localisation.getFormat("format.Use"));
+		
+		int offset = 0;
+		Item retrievedItem;
+		do
+		{
+			//Could not find item
+			if(offset+1 >= args.size())
+				return respond(Localisation.getString("errors.ItemNotFound"));
+			//Item name is everything except target
+			String itemName = StringUtils.join(args.subList(0, args.size()-offset++), " ");
+			retrievedItem = ItemManager.getItem(itemName);
+		}
+		while(!(retrievedItem instanceof Usable));
+		
+		Usable usableItem = (Usable) retrievedItem;
+		
+		//Does it require a target which wasn't passed
+		if(usableItem.isTargetRequired() && offset < 2)
+			return respond(Localisation.getString("errors.RequiresTarget"));
+		
+		String target = (args.size()<2) ? null : args.get(args.size()-1);
+		
+		if(usableItem == Usable.shiny_stone)
+		{
+			PartyPokemon pokemon = getPartyPokemon(target);
+			if(pokemon == null)
+				return respond(Localisation.getString("errors.PokemonNotFound"));
+			if(pokemon.isShiny())
+				return respond(Localisation.getString("errors.PokemonIsAlready", "shiny"));
+			pokemon.setShiny(true);
+			pokemon.update();
+			return respond(Localisation.getString("actions.PokemonShiny", pokemon.getPokemon().getName()));
+		}
+		else if(usableItem == Usable.mega_stone)
+		{
+			PartyPokemon pokemon = getPartyPokemon(target);
+			if(pokemon == null)
+				return respond(Localisation.getString("errors.PokemonNotFound"));
+			if(pokemon.isMega())
+				return respond(Localisation.getString("errors.PokemonIsAlready", "mega"));
+			pokemon.setMega(true);
+			pokemon.update();
+			return respond(Localisation.getString("actions.PokemonMega", pokemon.getPokemon().getName()));
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Outputs the user's bag
+	 */
+	private boolean getBag()
+	{
+		return true;
 	}
 
 	/**
 	 * Creates a new user
 	 */
-	private void createNewUser()
+	private boolean createNewUser()
 	{
 		TwitchUser twitchUser = TwitchAPI.GetTwitchUser(chatUser.getNick());
-		User newUser = User.Create(twitchUser.getId(), twitchUser.getName(),
+		User newUser = User.create(twitchUser.getId(), twitchUser.getName(),
 				twitchUser.getDisplayName());
 		newUser.save();
 
 		tpUser = DBConn.GetUser(twitchUser.getName());
+		return true;
+	}
+
+	/**
+	 * Sends a message to respond to the user
+	 * @param message The message to respond to the user
+	 */
+	private boolean respond(String message)
+	{
+		ircEvent.respond(message);
+		return true;
+	}
+	
+	/**
+	 * Gets a particular pokemon in a user's party
+	 * @param name The name of the pokemon to get
+	 * @return The party pokemon or null if not found
+	 */
+	private PartyPokemon getPartyPokemon(String name)
+	{
+		PartyPokemon selectedPokemon = null;
+
+		// Scroll through all party pokemon to find theirs
+		for (PartyPokemon poke : tpUser.getParty()) {
+			String partyPokeName = poke.getPokemon().getName();
+
+			if (partyPokeName.equalsIgnoreCase(name)) {
+				selectedPokemon = poke;
+				break;
+			}
+		}
+		
+		return selectedPokemon;
 	}
 }

@@ -23,8 +23,21 @@
         <property name="donator" type="int">
             <column name="donator" not-null="true" />
         </property>
+        <property name="supermod" type="boolean">
+            <column name="supermod" not-null="true" />
+        </property>
         <property name="updatedAt" type="timestamp">
             <column name="updated_at" length="19" not-null="true" />
         </property>
+		<list name="inventory" cascade="save-update">
+			<key column="user" />
+			<list-index column="added_at" />
+			<one-to-many class="twitchpokedex.database.maps.InventoryItem" />
+		</list>
+		<list name="party" cascade="save-update">
+			<key column="user" />
+			<list-index column="slot" />
+			<one-to-many class="twitchpokedex.database.maps.PartyPokemon"/>
+		</list>
     </class>
 </hibernate-mapping>

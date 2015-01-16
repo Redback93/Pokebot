@@ -8,7 +8,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Usable implements Item
 {
-	shiny_stone, mega_stone;
+	shiny_stone(true), 
+	mega_stone(true);
+	
+	private boolean targetRequired;
 
 	@Override
 	public String description()

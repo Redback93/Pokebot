@@ -1,6 +1,7 @@
 package twitchpokedex.database.maps;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -10,9 +11,11 @@ import javax.persistence.TemporalType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(exclude={"inventory","party"}, callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class User extends MapModel
@@ -26,11 +29,16 @@ public class User extends MapModel
 	private String displayName;
 	private int points;
 	private int donator;
+	private boolean supermod;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "timestamp", nullable = false, columnDefinition = "TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP")
 	private Date updatedAt = new Date();
+	
+	private List<InventoryItem> inventory;
+	private List<PartyPokemon> party;
 
-	public static User Create(int twitchId, String username, String displayName)
+	public static User create(int twitchId, String username, String displayName)
 	{
 		User newUser = new User();
 

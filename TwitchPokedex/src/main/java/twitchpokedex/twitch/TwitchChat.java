@@ -3,7 +3,6 @@ package twitchpokedex.twitch;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.nio.charset.Charset;
-import java.util.Collections;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -14,7 +13,6 @@ import twitchpokedex.constants.Constants;
 import twitchpokedex.database.DBConn;
 import twitchpokedex.logging.Logging;
 import twitchpokedex.twitch.listeners.ChannelListener;
-import twitchpokedex.twitch.listeners.GenericListener;
 import twitchpokedex.twitch.listeners.TradeListener;
 
 /**
@@ -120,7 +118,6 @@ public class TwitchChat
 				.setServerPassword(password)
 				.setServer(Constants.IRC_HOST, Constants.IRC_PORT)
 				.setEncoding(Charset.forName("UTF-8"))
-				.addListener(new GenericListener())
 				.addListener(new TradeListener())
 				.addListener(new ChannelListener());
 		for (String channel : channels)

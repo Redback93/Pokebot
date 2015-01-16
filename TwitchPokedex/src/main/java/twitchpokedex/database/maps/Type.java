@@ -1,16 +1,15 @@
 package twitchpokedex.database.maps;
 
-import java.util.Set;
-
 import javax.persistence.Id;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.AccessLevel;
-
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 public class Type extends MapModel

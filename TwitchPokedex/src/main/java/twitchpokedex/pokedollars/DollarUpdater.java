@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import twitchpokedex.constants.Constants;
 import twitchpokedex.database.DBConn;
 import twitchpokedex.database.maps.User;
 
@@ -53,7 +54,7 @@ public class DollarUpdater
 			int newPoints = Integer.parseInt(DBConn
 					.GetSetting("AccumulatedPoints"));
 			for (User user : updatingUsers) {
-				user.addPoints(newPoints);
+				user.addPoints((int) ((user.hasDonated() ? Constants.DONATOR_MULTIPLIER : 1.0) * newPoints));
 				user.update();
 			}
 		}

@@ -15,5 +15,8 @@
         <property name="quantity" type="int">
             <column name="quantity" not-null="true" />
         </property>
+        <property name="addedAt" type="timestamp">
+            <column name="added_at" length="19" not-null="true" />
+        </property>
     </class>
 </hibernate-mapping>

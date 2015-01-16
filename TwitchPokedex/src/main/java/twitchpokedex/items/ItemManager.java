@@ -9,6 +9,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import twitchpokedex.logging.Logging;
 import twitchpokedex.utils.Localisation;
 
 public class ItemManager
@@ -40,6 +41,7 @@ public class ItemManager
 			if (!key.endsWith("description") && !key.startsWith("default"))
 				identifiers.put(items.getString(key), key);
 		}
+		Logging.GetLogger().info(String.format("Loaded %d items", identifiers.size()));
 	}
 
 	private static String tryGetString(String keyName, String defaultReturn)
